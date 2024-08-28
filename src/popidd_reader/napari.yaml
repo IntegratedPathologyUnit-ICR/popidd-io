@@ -1,0 +1,37 @@
+name: popidd-reader
+display_name: POPIDD Reader
+# use 'hidden' to remove plugin from napari hub search results
+visibility: public
+# see https://napari.org/stable/plugins/manifest.html for valid categories
+categories: ["Annotation", "Segmentation", "Acquisition"]
+contributions:
+  commands:
+    - id: popidd-reader.get_reader
+      python_name: popidd_reader._reader:napari_get_reader
+      title: Open data with POPIDD Reader
+    - id: popidd-reader.make_container_widget
+      python_name: popidd_reader:ImageThreshold
+      title: Make threshold Container widget
+    - id: popidd-reader.make_magic_widget
+      python_name: popidd_reader:threshold_magic_widget
+      title: Make threshold magic widget
+    - id: popidd-reader.make_function_widget
+      python_name: popidd_reader:threshold_autogenerate_widget
+      title: Make threshold function widget
+    - id: popidd-reader.make_qwidget
+      python_name: popidd_reader:ExampleQWidget
+      title: Make example QWidget
+  readers:
+    - command: popidd-reader.get_reader
+      accepts_directories: false
+      filename_patterns: ['*.npy']
+  widgets:
+    - command: popidd-reader.make_container_widget
+      display_name: Container Threshold
+    - command: popidd-reader.make_magic_widget
+      display_name: Magic Threshold
+    - command: popidd-reader.make_function_widget
+      autogenerate: true
+      display_name: Autogenerate Threshold
+    - command: popidd-reader.make_qwidget
+      display_name: Example QWidget
