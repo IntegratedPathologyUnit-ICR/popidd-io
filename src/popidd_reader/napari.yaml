@@ -21,6 +21,9 @@ contributions:
     - id: popidd-reader.make_qwidget
       python_name: popidd_reader:ExampleQWidget
       title: Make example QWidget
+    - id: popidd-reader.wLoadImage
+      python_name: popidd_reader:wLoadImage
+      title: Image loader widget
   readers:
     - command: popidd-reader.get_reader
       accepts_directories: false
@@ -35,3 +38,5 @@ contributions:
       display_name: Autogenerate Threshold
     - command: popidd-reader.make_qwidget
       display_name: Example QWidget
+    - command: popidd-reader.wLoadImage
+      display_name: Image Loader

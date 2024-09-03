@@ -35,6 +35,8 @@ from magicgui.widgets import CheckBox, Container, create_widget
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
 from skimage.util import img_as_float
 
+from ._image import image_reader
+
 if TYPE_CHECKING:
     import napari
 
@@ -61,6 +63,24 @@ def threshold_magic_widget(
 ) -> "napari.types.LabelsData":
     return img_as_float(img_layer.data) > threshold
 
+
+#Test magic factory usage directly (not as decorator)
+wLoadImage = magic_factory(function=image_reader,
+        bf_imgs = {
+            "label":"Brightfield image(s)", 
+            "widget_type":"FileEdit", "mode":"rm",
+            "filter":"*.tiff;*.tif;*.svs;*.ndpi"
+            },
+        if_imgs = {
+            "label":"Fluorescence image(s)", 
+            "widget_type":"FileEdit", "mode":"rm",
+            "filter":"*.tiff;*.tif;*qptiff"
+            },
+        load_mem = {
+            "widget_type": "CheckBox", "value": False, 
+            "text": "Load full image(s) into memory"
+            },
+        call_button = "Load image(s)")
 
 # if we want even more control over our widget, we can use
 # magicgui `Container`
