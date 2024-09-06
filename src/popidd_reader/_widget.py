@@ -30,12 +30,17 @@ Replace code below according to your needs.
 """
 from typing import TYPE_CHECKING
 
+import warnings
+from napari.utils.notifications import WarningNotification
+
+from pathlib import Path
 from magicgui import magic_factory
 from magicgui.widgets import CheckBox, Container, create_widget
+import napari.layers
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
 from skimage.util import img_as_float
 
-from ._image import image_reader
+from ._image import load_img
 
 if TYPE_CHECKING:
     import napari
@@ -63,6 +68,27 @@ def threshold_magic_widget(
 ) -> "napari.types.LabelsData":
     return img_as_float(img_layer.data) > threshold
 
+
+def image_reader(
+    viewer: "napari.Viewer",
+    bf_imgs = Path(""),
+    if_imgs = Path(""),
+    load_mem = bool
+):
+    empty_flag = True
+    for img in bf_imgs:
+        if img.is_file():
+            img_layer_data = load_img(img, modality="BF", load_mem=load_mem)
+            viewer.add_layer(napari.layers.Layer.create(*img_layer_data)) #not using add layer with plugins as user might want to overwrite modality set
+            empty_flag = False
+    for img in if_imgs:
+        if img.is_file():
+            img_layer_data = load_img(img, modality="IF", load_mem=load_mem)
+            viewer.add_layer(napari.layers.Layer.create(*img_layer_data)) #not using add layer with plugins as user might want to overwrite modality set
+            empty_flag = False
+    if empty_flag is True: # Should the selection be empty it will return a warning on the GUI
+        warning_empty = warnings.warn("No image(s) selected for loading.")
+        WarningNotification(warning_empty)
 
 #Test magic factory usage directly (not as decorator)
 wLoadImage = magic_factory(function=image_reader,

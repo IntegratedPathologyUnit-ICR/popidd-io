@@ -6,8 +6,8 @@ visibility: public
 categories: ["Annotation", "Segmentation", "Acquisition"]
 contributions:
   commands:
-    - id: popidd-reader.get_reader
-      python_name: popidd_reader._reader:napari_get_reader
+    - id: popidd-reader.get_image_reader
+      python_name: popidd_reader._reader:get_image_reader
       title: Open data with POPIDD Reader
     - id: popidd-reader.make_container_widget
       python_name: popidd_reader:ImageThreshold
@@ -25,9 +25,9 @@ contributions:
       python_name: popidd_reader:wLoadImage
       title: Image loader widget
   readers:
-    - command: popidd-reader.get_reader
+    - command: popidd-reader.get_image_reader
       accepts_directories: false
-      filename_patterns: ['*.npy']
+      filename_patterns: ["*.tiff", "*.tif", "*.svs", "*.ndpi", "*.qptiff"]
   widgets:
     - command: popidd-reader.make_container_widget
       display_name: Container Threshold
