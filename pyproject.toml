@@ -1,5 +1,5 @@
 [project]
-name = "popidd-reader"
+name = "popidd-io"
 dynamic = ["version"]
 description = "A simple plugin to read digital pathology images and annotations"
 readme = "README.md"
@@ -48,7 +48,7 @@ testing = [
 ]
 
 [project.entry-points."napari.manifest"]
-popidd-reader = "popidd_reader:napari.yaml"
+popidd-io = "popidd_io:napari.yaml"
 
 
 
@@ -67,7 +67,7 @@ where = ["src"]
 
 
 [tool.setuptools.dynamic]
-version = {attr = "popidd_reader.__init__.__version__"}
+version = {attr = "popidd_io.__init__.__version__"}
 
 [tool.black]
 line-length = 79

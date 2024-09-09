@@ -1,6 +1,6 @@
 import numpy as np
 
-from popidd_reader import napari_get_reader
+from popidd_io import napari_get_reader
 
 
 # tmp_path is a pytest fixture

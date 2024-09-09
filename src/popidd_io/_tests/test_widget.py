@@ -1,6 +1,6 @@
 import numpy as np
 
-from popidd_reader._widget import (
+from popidd_io._widget import (
     ExampleQWidget,
     ImageThreshold,
     threshold_autogenerate_widget,
