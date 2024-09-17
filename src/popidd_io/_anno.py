@@ -1,0 +1,1 @@
+# Add here the geojson  and parquet reading and writing support for qupath compatibility

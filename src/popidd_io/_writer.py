@@ -1,0 +1,1 @@
+# For now I will only add here support for geojson and parquet writing of shapes/points/labels layers

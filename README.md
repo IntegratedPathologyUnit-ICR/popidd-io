@@ -1,11 +1,11 @@
-# popidd-reader
+# popidd-io
 
-[![License GNU GPL v3.0](https://img.shields.io/pypi/l/popidd-reader.svg?color=green)](https://github.com/IntegratedPathologyUnit-ICR/popidd-reader/raw/main/LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/popidd-reader.svg?color=green)](https://pypi.org/project/popidd-reader)
-[![Python Version](https://img.shields.io/pypi/pyversions/popidd-reader.svg?color=green)](https://python.org)
-[![tests](https://github.com/IntegratedPathologyUnit-ICR/popidd-reader/workflows/tests/badge.svg)](https://github.com/IntegratedPathologyUnit-ICR/popidd-reader/actions)
-[![codecov](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-reader/branch/main/graph/badge.svg)](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-reader)
-[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/popidd-reader)](https://napari-hub.org/plugins/popidd-reader)
+[![License GNU GPL v3.0](https://img.shields.io/pypi/l/popidd-io.svg?color=green)](https://github.com/IntegratedPathologyUnit-ICR/popidd-io/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/popidd-io.svg?color=green)](https://pypi.org/project/popidd-io)
+[![Python Version](https://img.shields.io/pypi/pyversions/popidd-io.svg?color=green)](https://python.org)
+[![tests](https://github.com/IntegratedPathologyUnit-ICR/popidd-io/workflows/tests/badge.svg)](https://github.com/IntegratedPathologyUnit-ICR/popidd-io/actions)
+[![codecov](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io/branch/main/graph/badge.svg)](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io)
+[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/popidd-io)](https://napari-hub.org/plugins/popidd-io)
 
 A simple plugin to read digital pathology images and annotations
 
@@ -23,9 +23,9 @@ https://napari.org/stable/plugins/index.html
 
 ## Installation
 
-You can install `popidd-reader` via [pip]:
+You can install `popidd-io` via [pip]:
 
-    pip install popidd-reader
+    pip install popidd-io
 
 
 
@@ -38,7 +38,7 @@ the coverage at least stays the same before you submit a pull request.
 ## License
 
 Distributed under the terms of the [GNU GPL v3.0] license,
-"popidd-reader" is free and open source software
+"popidd-io" is free and open source software
 
 ## Issues
 
