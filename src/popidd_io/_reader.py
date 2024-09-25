@@ -5,10 +5,9 @@ It implements the Reader specification, but your plugin may choose to
 implement multiple readers or even other plugin contributions. see:
 https://napari.org/stable/plugins/guides.html?#readers
 """
-import numpy as np
 
-from pathlib import Path
 from ._image import load_img
+from ._anno import load_geojson
 from collections.abc import Sequence, Callable
 
 
@@ -20,37 +19,12 @@ def get_image_reader(path: str | Sequence[str]) -> Callable | None:
         return load_img
 
 
-# def get_popidd_reader(path: str | Sequence[str]) -> Callable | None:
-#     if not isinstance(path, str):
-#         return None
-#     img_formats = (".tiff", ".tif", ".svs", ".ndpi", ".qptiff")
-#     anno_formats = ("*.geojson","*.parquet")
-#     paths = [path] if isinstance(path, str) else path
-
-#     img_paths = [Path(p) for p in paths if Path(p).suffix in img_formats]
-
-#     if img_paths:
-#         print("Found some paths")
-#         return image_reader(img_paths)
-#     else:
-#         return None
-
-# def image_reader(path):
-#     print(path)
-#     img = Path(path)
-    
-
-#     # img_layer_data = []
-#     # for img in paths:
-#     #     if img.is_file():
-#     #         print(img)
-#     #         result = load_img(img)
-#     #         print(type(result))
-#     #         img_layer_data.extend(result)
-
-#     # print(type(img_layer_data))
-#     # return img_layer_data
-
+def get_anno_reader(path: str | Sequence[str]) -> Callable | None:
+    anno_formats = (".geojson") #parquet later too
+    if not isinstance(path, str):
+        return None
+    else:
+        return load_geojson
 
 # def napari_get_reader(path):
 #     """A basic implementation of a Reader contribution.

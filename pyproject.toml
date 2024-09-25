@@ -34,7 +34,9 @@ dependencies = [
     "dask",
     "pathlib",
     "tifffile",
-    "imagecodecs"
+    "imagecodecs",
+    "geopandas",
+    "pyarrow"
 ]
 
 [project.optional-dependencies]

@@ -16,4 +16,5 @@ dock_widget, plugin_widget = viewer.window.add_plugin_dock_widget(
     tabify=False
 )
 
+
 run()

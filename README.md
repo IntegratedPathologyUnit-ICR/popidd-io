@@ -23,10 +23,22 @@ https://napari.org/stable/plugins/index.html
 
 ## Installation
 
-You can install `popidd-io` via [pip]:
 
-    pip install popidd-io
+Setup conda environment
 
+    mamba create -n popidd_io python pip
+
+Install test version from project base directory
+
+    pip install -e ".[testing]"
+
+Run dev environment with
+
+    python developing.py
+
+<!-- You can install `popidd-io` via [pip]:
+
+    pip install popidd-io -->
 
 
 
@@ -36,6 +48,8 @@ Contributions are very welcome. Tests can be run with [tox], please ensure
 the coverage at least stays the same before you submit a pull request.
 
 ## License
+
+Made by Ferran Cardoso Rodriguez with the help of colleagues at the Integrated Pathology Unit.
 
 Distributed under the terms of the [GNU GPL v3.0] license,
 "popidd-io" is free and open source software
