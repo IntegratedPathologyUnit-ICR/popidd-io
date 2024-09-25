@@ -1,7 +1,7 @@
 name: popidd-io
 display_name: POPIDD IO
 # use 'hidden' to remove plugin from napari hub search results
-visibility: public
+visibility: hidden
 # see https://napari.org/stable/plugins/manifest.html for valid categories
 categories: ["Annotation", "Segmentation", "Acquisition"]
 contributions:
@@ -18,18 +18,6 @@ contributions:
     - id: popidd-io.get_anno_reader
       python_name: popidd_io._reader:get_anno_reader
       title: Load annotations with POPIDD Reader
-    # - id: popidd-io.make_container_widget
-    #   python_name: popidd_io:ImageThreshold
-    #   title: Make threshold Container widget
-    # - id: popidd-io.make_magic_widget
-    #   python_name: popidd_io:threshold_magic_widget
-    #   title: Make threshold magic widget
-    # - id: popidd-io.make_function_widget
-    #   python_name: popidd_io:threshold_autogenerate_widget
-    #   title: Make threshold function widget
-    # - id: popidd-io.make_qwidget
-    #   python_name: popidd_io:ExampleQWidget
-    #   title: Make example QWidget
   readers:
     - command: popidd-io.get_image_reader
       accepts_directories: false
@@ -42,12 +30,3 @@ contributions:
       display_name: Image Loader
     - command: popidd-io.wLoadAnno
       display_name: Annotation Loader
-    # - command: popidd-io.make_container_widget
-    #   display_name: Container Threshold
-    # - command: popidd-io.make_magic_widget
-    #   display_name: Magic Threshold
-    # - command: popidd-io.make_function_widget
-    #   autogenerate: true
-    #   display_name: Autogenerate Threshold
-    # - command: popidd-io.make_qwidget
-    #   display_name: Example QWidget
