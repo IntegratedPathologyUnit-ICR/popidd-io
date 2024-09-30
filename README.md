@@ -44,7 +44,14 @@ Run dev environment with
 
     pip install popidd-io -->
 
+## Description
 
+This plugin brings support for brightfield and fluorescence images to Napari,
+as well as adding support for polygonal annotations in geoJSON files saved by QuPath.
+
+Brightfield images are loaded as a single layer, incorporating also resolution information if found on the metadata.
+Fluorescence images are separated into channels annotated using the information present in the image metadata.
+Support for this latter modality is still ongoing and will improve in the coming weeks.
 
 ## Contributing
 
