@@ -1,7 +1,7 @@
 [project]
 name = "popidd-io"
 dynamic = ["version"]
-description = "A simple plugin to read digital pathology images and annotations"
+description = "A simple plugin to read digital pathology images and annotations Made at the IPU (ICR/RMH)."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [

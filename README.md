@@ -8,6 +8,7 @@
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/popidd-io)](https://napari-hub.org/plugins/popidd-io)
 
 A simple plugin to read digital pathology images and annotations.
+Made by Ferran Cardoso at the Integrated Pathology Unit (ICR/RMH).
 
 This is still an experimental and in-development project,
 so expect considerable additions and changes to existing methods.
