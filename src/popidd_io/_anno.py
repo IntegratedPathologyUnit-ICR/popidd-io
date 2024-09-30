@@ -1,8 +1,8 @@
 import pathlib
+
 import geopandas
 import pandas
 from napari.types import LayerDataTuple
-
 
 # Add here the geojson  and parquet reading and writing support for qupath compatibility
 
@@ -11,8 +11,16 @@ from napari.types import LayerDataTuple
 # parquet to shapes for cell annotations
 
 
-def load_geojson(
-    path: str | pathlib.Path) -> list[LayerDataTuple]:
+def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
+    """
+    Load a GeoJSON file and convert it to a list of shape layers.
+
+    Parameters:
+    path (str | pathlib.Path): The path to the GeoJSON file.
+
+    Returns:
+    list[LayerDataTuple]: A list of LayerDataTuple containing the shape layer information.
+    """
 
     if isinstance(path, str):
         print("PATH IS A STRINGG!!!!!")
@@ -31,28 +39,34 @@ def load_geojson(
         else:
             print(geo_anno["geometry"][anno].type)
             raise NotImplementedError(print(geo_anno["geometry"][anno].type))
-        
-        shape_layer_data.append((
-            nap_anno,
-            {
-                "name": _,
-                "shape_type":"polygon",
-                "rotate":-90,
-                "scale":[-1, 1], #Needs to be set to img layer scale, with *-1,*1
-                "metadata":{"from_geoJSON":True}
-            }, 
-            "shapes"
-        ))
+
+        shape_layer_data.append(
+            (
+                nap_anno,
+                {
+                    "name": _,
+                    "shape_type": "polygon",
+                    "rotate": -90,
+                    "scale": [
+                        -1,
+                        1,
+                    ],  # Needs to be set to img layer scale, with *-1,*1
+                    "metadata": {"from_geoJSON": True},
+                },
+                "shapes",
+            )
+        )
     return shape_layer_data
 
-def load_parquet(
-    path: str | pathlib.Path) -> list[LayerDataTuple]:
+
+def load_parquet(path: str | pathlib.Path) -> list[LayerDataTuple]:
 
     if isinstance(path, str):
         print("PATH IS A STRINGG!!!!!")
         path = pathlib.Path(path)
-    
+
     df = pandas.read_parquet(path)
+    print("Experiental")
     print(df)
 
 
@@ -90,4 +104,3 @@ def load_parquet(
 #     gdf.to_file(filename= annoDir / f"{imgAnno.name}.geojson", driver="GeoJSON")
 
 # def save_parquet():
-

@@ -7,7 +7,11 @@
 [![codecov](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io/branch/main/graph/badge.svg)](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/popidd-io)](https://napari-hub.org/plugins/popidd-io)
 
-A simple plugin to read digital pathology images and annotations
+A simple plugin to read digital pathology images and annotations.
+
+This is still an experimental and in-development project,
+so expect considerable additions and changes to existing methods.
+Documentation and tests will be added in the coming weeks.
 
 ----------------------------------
 
