@@ -24,7 +24,7 @@ contributions:
       filename_patterns: ["*.tiff", "*.tif", "*.svs", "*.ndpi", "*.qptiff"]
     - command: popidd-io.get_anno_reader
       accepts_directories: false
-      filename_patterns: ["*.geojson"]
+      filename_patterns: ["*.geojson", "*.parquet"]
   widgets:
     - command: popidd-io.wLoadImage
       display_name: Image Loader

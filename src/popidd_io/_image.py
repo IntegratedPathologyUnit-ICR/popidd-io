@@ -19,21 +19,22 @@ def load_img(
     path: str | pathlib.Path,
     modality: Optional[str] = None,
     load_mem: bool = False,
-) -> list["napari.typesLayerDataTuple"]:
+) -> list["napari.types.LayerDataTuple"]:
     """
     Load an image file and convert it to a list of image layers for use in napari.
 
     Parameters:
     path (str | pathlib.Path): The path to the image file.
-    modality (Optional[str]): The modality of the image (e.g., "BF" for Brightfield, "IF" for Immunofluorescence). If None, the modality will be inferred.
+    modality (Optional[str]): The modality of the image (e.g., "BF" for Brightfield,
+        "IF" for Immunofluorescence). If None, the modality will be inferred.
     load_mem (bool): Whether to load the image into memory.
 
     Returns:
-    list[napari.types.LayerDataTuple]: A list of LayerDataTuple containing the image layer information.
+    list[napari.types.LayerDataTuple]: A list of LayerDataTuple containing the
+        image layer information.
     """
 
     if isinstance(path, str):
-        print("PATH IS A STRINGG!!!!!")
         path = pathlib.Path(path)
 
     zarray, int_scale, _ = read_img(path, load_mem)  # return modality
@@ -99,6 +100,24 @@ def load_img(
 
 
 def read_img(img, load_mem):  # img is pathlib path
+    def read_img(img, load_mem):
+        """
+        Reads an image from a given pathlib path and processes it.
+
+        Parameters:
+        img (pathlib.Path): The path to the image file.
+        load_mem (bool): Flag to determine if the image should be loaded into memory.
+
+        Returns:
+        tuple: A tuple containing:
+            - zarray (list): A list of zarr arrays representing the image data.
+            - int_scale (int): The intensity scale of the image based on its bit depth.
+            - modality (str): The modality of the image, either "BF" (Bright Field) or "IF" (Immunofluorescence).
+
+        Raises:
+        NotImplementedError: If the image bit depth is not supported.
+        """
+
     # Loading Image data
     image = tifffile.imread(img, aszarr=True)
     image = zarr.open(image, "r")
@@ -106,9 +125,7 @@ def read_img(img, load_mem):  # img is pathlib path
         zarray = [array for _, array in image.arrays()]
     else:
         zarray = [image]
-
     print(len(zarray), zarray[0], zarray[0].shape)
-
     dask_array = darray.from_zarr(
         zarray[-1]
     )  # Convert zarr array to Dask array
@@ -133,16 +150,37 @@ def read_img(img, load_mem):  # img is pathlib path
         int_scale = 65535
         # int_scale = 255
     else:
-        raise NotImplementedError
-
-    del dask_array
+        raise NotImplementedError("The image bit depth is not supported.")
     if not load_mem:
         zarray = [darray.from_zarr(array) for array in zarray]
-
     return zarray, int_scale, modality  # returns list of zarr arrays
 
 
 def read_md(img, modality):
+    """
+    Reads metadata from a TIFF image file and returns it as a dictionary.
+
+    Parameters:
+    img (str): The file path to the TIFF image.
+    modality (str): The imaging modality, e.g., "IF" (Immunofluorescence).
+
+    Returns:
+    dict: A dictionary containing the image metadata, including:
+        - 'ImagePath': The file path to the image.
+        - 'ResolutionUnit': The unit of resolution (e.g., centimeters or inches).
+        - 'XResolution': The X resolution of the image.
+        - 'YResolution': The Y resolution of the image.
+        - 'res_scale': A tuple containing the scaling factors for the X and Y axes.
+        - 'path': The file path to the image.
+        - 'modality': The imaging modality.
+        - 'fluor_to_marker' (if modality is "IF"): A mapping of fluorophores to markers.
+        - 'colmap_channels' (if modality is "IF"): Color map channels.
+        - 'new_format' (if modality is "IF"): A flag indicating if the new format is used.
+
+    Raises:
+    NotImplementedError: If the resolution unit is not in centimeters or inches.
+    Warning: If the resolution metadata cannot be detected.
+    """
     # Loading Image metadata
     res_scale = (1, 1)
     with tifffile.TiffFile(img) as src:
@@ -185,21 +223,34 @@ def read_md(img, modality):
                 f"Could not detect resolution metadata for image \n {img.stem}. \n Exception: {e}"
             )
             WarningNotification(warning_noMD)
-
         md = full_res_tags
         md["path"] = img
         md["modality"] = modality
         md["res_scale"] = res_scale
-
         if modality == "IF":
-            md["fluor_to_marker"], md["colmap_channels"], md["new_format"] = (
-                _get_mdIF(src)
-            )
-
+            fluor_to_marker, colmap_channels, new_format = _get_mdIF(src)
+            md["fluor_to_marker"] = fluor_to_marker
+            md["colmap_channels"] = colmap_channels
+            md["new_format"] = new_format
     return md
 
 
 def _get_mdIF(TiffFile):
+    """
+    Extract metadata and color mapping from a TIFF file.
+
+    Args:
+        TiffFile (TiffFile): An instance of a TIFF file object from which metadata
+            and color mapping will be extracted.
+
+    Returns:
+        tuple: A tuple containing:
+            - fluor_to_marker (dict or bool): A dictionary mapping fluorophores
+                to markers if the new format is detected, otherwise False.
+            - colmap_channels (dict): A dictionary mapping channel names to their
+                respective RGB color tuples.
+            - new_format (bool): A boolean indicating whether the new format was detected.
+    """
     new_format = False
     single_page_md = False
     fluor_to_marker = False
@@ -217,7 +268,6 @@ def _get_mdIF(TiffFile):
                 for item in dicti["spectra"]
                 if "fluor" in item and "marker" in item
             }
-
     colmap_channels = {}
     for page in TiffFile.series[0].pages:
         try:
@@ -236,7 +286,6 @@ def _get_mdIF(TiffFile):
                 )
         except:  # attribute error on the else above and keyerror on the imagedescription
             single_page_md = True
-
     # EXPERIMENTAL, to be worked upon
     if single_page_md:
         tree = ElementTree.ElementTree(xml)
@@ -256,7 +305,6 @@ def _get_mdIF(TiffFile):
         print(channels)
         print(channels.text)
         print(channels.text.split(","))
-
     print(colmap_channels)
     colmap_channels = {
         key: tuple(

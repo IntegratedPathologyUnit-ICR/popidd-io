@@ -6,25 +6,35 @@ implement multiple readers or even other plugin contributions. see:
 https://napari.org/stable/plugins/guides.html?#readers
 """
 
+from collections.abc import Callable, Sequence
+
+from ._anno import load_geojson, load_parquet
 from ._image import load_img
-from ._anno import load_geojson
-from collections.abc import Sequence, Callable
 
 
 def get_image_reader(path: str | Sequence[str]) -> Callable | None:
-    img_formats = (".tiff", ".tif", ".svs", ".ndpi", ".qptiff") #Need to add these to yaml
-    if not isinstance(path, str):
-        return None
+    img_formats = (".tiff", ".tif", ".svs", ".ndpi", ".qptiff")
+    if isinstance(path, str):
+        if not path.lower().endswith(img_formats):
+            return None
+    elif isinstance(path, Sequence):
+        print(path)
+        print(type(path))
+        if not all(p.lower().endswith(img_formats) for p in path):
+            return None
     else:
-        return load_img
+        return None
+    return load_img
 
 
 def get_anno_reader(path: str | Sequence[str]) -> Callable | None:
-    anno_formats = (".geojson") #parquet later too
-    if not isinstance(path, str):
-        return None
-    else:
+    if path.lower().endswith(".geojson"):
         return load_geojson
+    elif path.lower().endswith(".parquet"):
+        return load_parquet
+    else:
+        return None
+
 
 # def napari_get_reader(path):
 #     """A basic implementation of a Reader contribution.

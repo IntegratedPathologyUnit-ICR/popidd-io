@@ -23,7 +23,6 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
     """
 
     if isinstance(path, str):
-        print("PATH IS A STRINGG!!!!!")
         path = pathlib.Path(path)
 
     geo_anno = geopandas.read_file(path)
@@ -38,7 +37,7 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
                 nap_anno.append(poly.exterior.coords[:])
         else:
             print(geo_anno["geometry"][anno].type)
-            raise NotImplementedError(print(geo_anno["geometry"][anno].type))
+            raise NotImplementedError(geo_anno["geometry"][anno].type)
 
         shape_layer_data.append(
             (
@@ -60,7 +59,16 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
 
 
 def load_parquet(path: str | pathlib.Path) -> list[LayerDataTuple]:
-
+    """
+    Load a Parquet file and return its contents as a list of LayerDataTuple.
+    Parameters:
+    path (str | pathlib.Path): The path to the Parquet file.
+    Returns:
+    list[LayerDataTuple]: A list containing the data from the Parquet file,
+        formatted as a LayerDataTuple with the data as a NumPy array,
+        an empty dictionary for metadata, and the string "labels".
+    """
+    print("WIP function")
     if isinstance(path, str):
         print("PATH IS A STRINGG!!!!!")
         path = pathlib.Path(path)
@@ -68,6 +76,8 @@ def load_parquet(path: str | pathlib.Path) -> list[LayerDataTuple]:
     df = pandas.read_parquet(path)
     print("Experiental")
     print(df)
+
+    return [(df.to_numpy(), {}, "labels")]
 
 
 # def save_geojson
