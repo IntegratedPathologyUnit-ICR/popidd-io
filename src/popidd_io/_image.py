@@ -99,24 +99,23 @@ def load_img(
     return img_layer_data
 
 
-def read_img(img, load_mem):  # img is pathlib path
-    def read_img(img, load_mem):
-        """
-        Reads an image from a given pathlib path and processes it.
+def read_img(img, load_mem):
+    """
+    Reads an image from a given pathlib path and processes it.
 
-        Parameters:
-        img (pathlib.Path): The path to the image file.
-        load_mem (bool): Flag to determine if the image should be loaded into memory.
+    Parameters:
+    img (pathlib.Path): The path to the image file.
+    load_mem (bool): Flag to determine if the image should be loaded into memory.
 
-        Returns:
-        tuple: A tuple containing:
-            - zarray (list): A list of zarr arrays representing the image data.
-            - int_scale (int): The intensity scale of the image based on its bit depth.
-            - modality (str): The modality of the image, either "BF" (Bright Field) or "IF" (Immunofluorescence).
+    Returns:
+    tuple: A tuple containing:
+        - zarray (list): A list of zarr arrays representing the image data.
+        - int_scale (int): The intensity scale of the image based on its bit depth.
+        - modality (str): The modality of the image, either "BF" (Bright Field) or "IF" (Immunofluorescence).
 
-        Raises:
-        NotImplementedError: If the image bit depth is not supported.
-        """
+    Raises:
+    NotImplementedError: If the image bit depth is not supported.
+    """
 
     # Loading Image data
     image = tifffile.imread(img, aszarr=True)
