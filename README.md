@@ -6,6 +6,9 @@
 [![tests](https://github.com/IntegratedPathologyUnit-ICR/popidd-io/workflows/tests/badge.svg)](https://github.com/IntegratedPathologyUnit-ICR/popidd-io/actions)
 [![codecov](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io/branch/main/graph/badge.svg)](https://codecov.io/gh/IntegratedPathologyUnit-ICR/popidd-io)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/popidd-io)](https://napari-hub.org/plugins/popidd-io)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14185575.svg)](https://doi.org/10.5281/zenodo.14185575)
+
+
 
 A simple plugin to read digital pathology images and annotations.
 Made by Ferran Cardoso at the Integrated Pathology Unit (ICR/RMH).
