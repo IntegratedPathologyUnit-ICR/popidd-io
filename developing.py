@@ -1,4 +1,4 @@
-#Create empty conda env with python and pip, then do `pip install -e ".[testing]"`
+# Create empty conda env with python and pip, then do `pip install -e ".[testing]"`
 from napari import Viewer, run
 from napari.settings import get_settings
 
@@ -12,8 +12,11 @@ viewer.scale_bar.colored = True
 viewer.scale_bar.unit = "cm"
 
 dock_widget, plugin_widget = viewer.window.add_plugin_dock_widget(
-    "popidd-io", "Image Loader",
-    tabify=False
+    "popidd-io", "Image Loader", tabify=False
+)
+
+dock_widget, plugin_widget = viewer.window.add_plugin_dock_widget(
+    "popidd-io", "Annotation Loader", tabify=False
 )
 
 

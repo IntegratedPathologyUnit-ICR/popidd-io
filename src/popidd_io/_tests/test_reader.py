@@ -69,13 +69,13 @@ def write_im2file(tmp_path):
                     "2": "128 128",
                 },
             }
-            options = dict(
-                photometric="rgb",
-                tile=(128, 128),
-                compression="jpeg",
-                resolutionunit="CENTIMETER",
-                maxworkers=2,
-            )
+            options = {
+                "photometric": "rgb",
+                "tile": (128, 128),
+                "compression": "jpeg",
+                "resolutionunit": "CENTIMETER",
+                "maxworkers": 2,
+            }
             tif.write(
                 data,
                 subifds=subresolutions,

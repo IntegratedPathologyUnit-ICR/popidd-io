@@ -30,14 +30,14 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
     for anno, _ in enumerate(geo_anno["name"]):
         print(anno, _)
         nap_anno = []
-        if geo_anno["geometry"][anno].type == "Polygon":
+        if geo_anno["geometry"][anno].geom_type == "Polygon":
             nap_anno.append(geo_anno["geometry"][anno].exterior.coords[:])
-        elif geo_anno["geometry"][anno].type == "MultiPolygon":
+        elif geo_anno["geometry"][anno].geom_type == "MultiPolygon":
             for poly in geo_anno["geometry"][anno].geoms:
                 nap_anno.append(poly.exterior.coords[:])
         else:
-            print(geo_anno["geometry"][anno].type)
-            raise NotImplementedError(geo_anno["geometry"][anno].type)
+            print(geo_anno["geometry"][anno].geom_type)
+            raise NotImplementedError(geo_anno["geometry"][anno].geom_type)
 
         shape_layer_data.append(
             (
@@ -81,36 +81,3 @@ def load_parquet(path: str | pathlib.Path) -> list[LayerDataTuple]:
 
 
 # def save_geojson
-
-# def wAnno(
-#         viewer: "napari.Viewer",
-#         imgAnno: "napari.layers.Image",
-#         shapeAnno: "napari.layers.Shapes",
-#         annoDir = pathlib.Path("")
-#         ):
-
-#     features = []
-#     for layer in shapeAnno:
-#         geoms = []
-#         for shape in layer.data:
-#             if layer.metadata.get("nap_generated"):
-#                 shape = numpy.dot(shape, [[0, 1], [1, 0]]) # QUpath rotates and flips images. WIP to make it standard for our workflow too
-#             geoms.append(Polygon(shape))
-#         mpoly = MultiPolygon(geoms)
-#         feature = {
-#             "type": "Feature",
-#             "properties": {
-#                 "objectType":"annotation",
-#                 "name":layer.name},
-#                 "geometry": mpoly.__geo_interface__
-#         }
-#         features.append(feature)
-#     feature_collection = {
-#         "type":"FeatureCollection",
-#         "features": features
-#     }
-
-#     gdf = geopandas.GeoDataFrame.from_features(feature_collection)
-#     gdf.to_file(filename= annoDir / f"{imgAnno.name}.geojson", driver="GeoJSON")
-
-# def save_parquet():

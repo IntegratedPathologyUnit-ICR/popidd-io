@@ -34,7 +34,19 @@ https://napari.org/stable/plugins/index.html
 
 Setup conda environment
 
-    mamba create -n popidd_io python pip
+    mamba create -n popidd_io python pip pyqt
+
+Activate conda environment
+
+    mamba activate popidd_io
+
+### End users
+
+You can install `popidd-io` via [pip]:
+
+    pip install popidd-io
+
+### Development
 
 Install test version from project base directory
 
@@ -44,9 +56,10 @@ Run dev environment with
 
     python developing.py
 
-<!-- You can install `popidd-io` via [pip]:
+Before contributing, please install and use pre-commit hooks:
 
-    pip install popidd-io -->
+    pip install pre-commit
+    pre-commit install
 
 ## Description
 
