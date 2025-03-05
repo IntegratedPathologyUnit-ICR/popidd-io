@@ -29,10 +29,10 @@ dependencies = [
     "scikit-image",
     "napari",
     "numpy",
-    "zarr",
+    "zarr<3",
     "dask",
     "pathlib",
-    "tifffile",
+    "tifffile=2025.1.10",
     "imagecodecs",
     "geopandas",
     "pyarrow"

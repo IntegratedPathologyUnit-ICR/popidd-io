@@ -119,8 +119,8 @@ def read_img(img, load_mem):
     """
 
     # Loading Image data
-    image = tifffile.imread(img, aszarr=True)
-    image = zarr.open(image, "r")
+    store = tifffile.imread(img, aszarr=True)
+    image = zarr.open(store, mode="r")
     if isinstance(image, zarr.hierarchy.Group):
         zarray = [array for _, array in image.arrays()]
     else:
