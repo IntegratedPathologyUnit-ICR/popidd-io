@@ -8,7 +8,7 @@ contributions:
   commands:
     - id: popidd-io.get_image_reader
       python_name: popidd_io._reader:get_image_reader
-      title: Open data with POPIDD Reader
+      title: Open data with POPIDD IO
     - id: popidd-io.wLoadImage
       python_name: popidd_io:wLoadImage
       title: Image loader widget
@@ -17,7 +17,10 @@ contributions:
       title: Annotation loader widget
     - id: popidd-io.get_anno_reader
       python_name: popidd_io._reader:get_anno_reader
-      title: Load annotations with POPIDD Reader
+      title: Load annotations with POPIDD IO
+    - id: popidd-io.save_geojson
+      python_name: popidd_io._anno:save_geojson
+      title: Save shape annotations with POPIDD IO
   readers:
     - command: popidd-io.get_image_reader
       accepts_directories: false
@@ -25,6 +28,10 @@ contributions:
     - command: popidd-io.get_anno_reader
       accepts_directories: false
       filename_patterns: ["*.geojson", "*.parquet"]
+  writers:
+    - command: popidd-io.save_geojson
+      layer_types: ["shapes+"]
+      filename_extensions: [".geojson"]
   widgets:
     - command: popidd-io.wLoadImage
       display_name: Image Loader

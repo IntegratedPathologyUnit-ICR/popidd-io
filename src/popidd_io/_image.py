@@ -261,7 +261,7 @@ def _get_mdIF(TiffFile):
         import json
 
         dicti = json.loads(xml.find(".//LibraryAsJSON").text)
-        if "spectra" in dicti.keys():
+        if "spectra" in dicti:
             new_format = True
             fluor_to_marker = {
                 item["fluor"]: item["marker"]
