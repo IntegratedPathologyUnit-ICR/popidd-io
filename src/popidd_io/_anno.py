@@ -105,7 +105,7 @@ def save_geojson(out_path: str | pathlib.Path, shapes: list[LayerDataTuple]) -> 
         }
         print(saved_annotations)
         print(out_path)
-        print(f"anno_{"-".join(saved_annotations)}.geojson")
+        # print(f"anno_{"-".join(saved_annotations)}.geojson")
         gdf = geopandas.GeoDataFrame.from_features(feature_collection)
         # gdf.to_file(filename= pathlib.Path(out_path) / f"anno_{"-".join(saved_annotations)}.geojson", driver="GeoJSON")
         gdf.to_file(filename= f"{pathlib.Path(out_path)}.geojson", driver="GeoJSON")
