@@ -7,7 +7,7 @@ import numpy
 import tifffile
 import zarr
 from dask import array as darray
-from napari.types import LayerDataTuple
+from napari.types import FullLayerData
 from napari.utils import Colormap
 from napari.utils.notifications import WarningNotification
 
@@ -20,7 +20,7 @@ def load_img(
     path: str | pathlib.Path,
     modality: Optional[str] = None,
     load_mem: bool = False,
-) -> list[LayerDataTuple]:
+) -> list[FullLayerData]:
     """
     Load an image file and convert it to a list of image layers for use in napari.
 
@@ -31,7 +31,7 @@ def load_img(
     load_mem (bool): Whether to load the image into memory.
 
     Returns:
-    list[napari.types.LayerDataTuple]: A list of LayerDataTuple containing the
+    list[napari.types.FullLayerData]: A list of FullLayerData containing the
         image layer information.
     """
 

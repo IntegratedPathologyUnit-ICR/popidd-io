@@ -3,7 +3,7 @@ import pathlib
 import geopandas
 import numpy
 import pandas
-from napari.types import LayerDataTuple
+from napari.types import FullLayerData
 from shapely import MultiPolygon, Polygon
 
 # Add here the geojson  and parquet reading and writing support for qupath compatibility
@@ -13,7 +13,7 @@ from shapely import MultiPolygon, Polygon
 # parquet to shapes for cell annotations
 
 
-def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
+def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
     """
     Load a GeoJSON file and convert it to a list of shape layers.
 
@@ -21,7 +21,7 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
     path (str | pathlib.Path): The path to the GeoJSON file.
 
     Returns:
-    list[LayerDataTuple]: A list of LayerDataTuple containing the shape layer information.
+    list[FullLayerData]: A list of FullLayerData containing the shape layer information.
     """
 
     if isinstance(path, str):
@@ -59,17 +59,50 @@ def load_geojson(path: str | pathlib.Path) -> list[LayerDataTuple]:
         )
     return shape_layer_data
 
-#Need to split off writer code and add relevant widget
-def save_geojson(out_path: str | pathlib.Path, shapes: list[LayerDataTuple]) -> list[str]:
+def shape2feat(layer: FullLayerData) -> dict:
+
+    if len(layer[0]) == 1:
+        if "qupath_comp" in layer[1]:
+            shape = numpy.dot(layer[0][0], [[0, 1], [1, 0]]) # QUpath rotates and flips images.
+        else:
+            shape = layer[0][0]
+        feat_geom = Polygon(shape)
+    elif len(layer[0]) > 1:
+        geoms = []
+        for shape in layer[0]:
+            if "qupath_comp" in layer[1]:
+                shape = numpy.dot(shape, [[0, 1], [1, 0]]) # QUpath rotates and flips images.
+            geoms.append(Polygon(shape))
+        feat_geom = MultiPolygon(geoms)
+    else:
+        print("WARNING: This shape layer is empty!")
+        return None
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "objectType":"annotation",
+            "name":layer[1]["name"]},
+            "geometry": feat_geom.__geo_interface__
+    }
+    
+    return feature
+
+
+def point2feat(layer: FullLayerData) -> dict:
+    raise NotImplementedError
+    return feature
+
+
+def write_geojson(out_path: str | pathlib.Path, features: dict) -> list[str]:
+    gdf = geopandas.GeoDataFrame.from_features(features)
+    # gdf.to_file(filename= pathlib.Path(out_path) / f"anno_{"-".join(saved_annotations)}.geojson", driver="GeoJSON")
+    gdf.to_file(filename= f"{pathlib.Path(out_path)}.geojson", driver="GeoJSON")
+
+
+def save_geojson(out_path: str | pathlib.Path, shapes: list[FullLayerData]) -> list[str]:
         saved_annotations = []
         features = []
         for layer in shapes:
-            print(len(layer))
-            print(type(layer))
-            print(layer[0])
-            print(layer[1]["name"])
-            print(layer[1].keys())
-            print(layer[2])
             if len(layer[0]) == 1:
                 if "qupath_comp" in layer[1]:
                     shape = numpy.dot(layer[0][0], [[0, 1], [1, 0]]) # QUpath rotates and flips images.
@@ -112,45 +145,7 @@ def save_geojson(out_path: str | pathlib.Path, shapes: list[LayerDataTuple]) -> 
 
         return [out_path]
 
-    # def save_geojson(shapes: list[LayerDataTuple], img: LayerDataTuple, outDir: pathlib.Path):
-    #         features = []
-    #         for layer in shapes:
-    #             if len(layer.data) == 1:
-    #                 if layer.metadata.get("qupath_comp"):
-    #                     shape = numpy.dot(layer.data[0], [[0, 1], [1, 0]]) # QUpath rotates and flips images.
-    #                 else:
-    #                     shape = layer.data[0]
-    #                 feat_geom = Polygon(shape)
-    #             elif len(layer.data) > 1:
-    #                 geoms = []
-    #                 for shape in layer.data:
-    #                     if layer.metadata.get("qupath_comp"):
-    #                         shape = numpy.dot(shape, [[0, 1], [1, 0]]) # QUpath rotates and flips images.
-    #                     geoms.append(Polygon(shape))
-    #                 feat_geom = MultiPolygon(geoms)
-    #             else:
-    #                 print("WARNING: This shape layer is empty!")
-    #                 continue
-    #             feature = {
-    #                 "type": "Feature",
-    #                 "properties": {
-    #                     "objectType":"annotation",
-    #                     "name":layer.name},
-    #                     "geometry": feat_geom.__geo_interface__
-    #             }
-    #             features.append(feature)
-    #         feature_collection = {
-    #             "type":"FeatureCollection",
-    #             "features": features,
-    #             "properties": {
-    #                 "prop1": "val1",
-    #                 "prop2": "val2"
-    #             }
-    #         }
-    #         gdf = geopandas.GeoDataFrame.from_features(feature_collection)
-    #         gdf.to_file(filename= outDir / f"{img[1]["name"]}.geojson", driver="GeoJSON")
-
-def load_parquet(path: str | pathlib.Path) -> list[LayerDataTuple]:
+def load_parquet(path: str | pathlib.Path) -> list[FullLayerData]:
     """
     Load a Parquet file and return its contents as a list of LayerDataTuple.
     Parameters:

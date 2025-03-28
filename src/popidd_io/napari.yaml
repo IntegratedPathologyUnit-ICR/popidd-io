@@ -18,6 +18,12 @@ contributions:
     - id: popidd-io.get_anno_reader
       python_name: popidd_io._reader:get_anno_reader
       title: Load annotations with POPIDD IO
+    - id: popidd-io.save_manyannolayers
+      python_name: popidd_io._writer:save_manyannolayers
+      title: Save shape annotations with POPIDD IO
+    - id: popidd-io.save_singleannolayer
+      python_name: popidd_io._writer:save_singleannolayer
+      title: Save shape annotations with POPIDD IO
     - id: popidd-io.save_geojson
       python_name: popidd_io._anno:save_geojson
       title: Save shape annotations with POPIDD IO
@@ -32,6 +38,13 @@ contributions:
     - command: popidd-io.save_geojson
       layer_types: ["shapes+"]
       filename_extensions: [".geojson"]
+    - command: popidd-io.save_manyannolayers
+      layer_types: ["shapes+","points+","labels+"]
+      filename_extensions: [".geojson"]
+    - command: popidd-io.save_singleannolayer
+      layer_types: ["shapes+","points+","labels+"]
+      filename_extensions: [".geojson"]
+
   widgets:
     - command: popidd-io.wLoadImage
       display_name: Image Loader
