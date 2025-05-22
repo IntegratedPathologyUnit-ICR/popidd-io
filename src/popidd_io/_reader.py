@@ -28,10 +28,20 @@ def get_image_reader(path: str | Sequence[str]) -> Callable | None:
 
 
 def get_anno_reader(path: str | Sequence[str]) -> Callable | None:
-    if path.lower().endswith(".geojson"):
-        return load_geojson
-    elif path.lower().endswith(".parquet"):
-        return load_parquet
+    if isinstance(path, str):
+        if path.lower().endswith(".geojson"):
+            return load_geojson
+        elif path.lower().endswith(".parquet"):
+            return load_parquet
+        else:
+            return None
+    elif isinstance(path, Sequence):
+        if all(p.lower().endswith(".geojson") for p in path):
+            return load_geojson
+        elif all(p.lower().endswith(".parquet") for p in path):
+            return load_parquet
+        else:
+            return None
     else:
         return None
 

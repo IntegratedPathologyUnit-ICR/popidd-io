@@ -1,14 +1,25 @@
 # For now I will only add here support for geojson and parquet writing of shapes/points/labels layers
 
-from ._anno import shape2feat, point2feat, write_geojson
-from napari.types import FullLayerData
 import pathlib
 
+from napari.types import FullLayerData
 
-def save_singleannolayer(out_path: str | pathlib.Path, data: any, attributes: dict) -> list[str]:
+from ._anno import point2feat, shape2feat, write_geojson
+
+
+def save_singleannolayer(
+    out_path: str | pathlib.Path, data: object, attributes: dict
+) -> list[str]:
+    print(out_path)
+    print(data)
+    print(attributes)
+    raise NotImplementedError
     return []
 
-def save_manyannolayers(out_path: str | pathlib.Path, layers: list[FullLayerData]) -> list[str]:
+
+def save_manyannolayers(
+    out_path: str | pathlib.Path, layers: list[FullLayerData]
+) -> list[str]:
     feature_list = []
     saved_annotations = []
     for layer in layers:
@@ -24,19 +35,17 @@ def save_manyannolayers(out_path: str | pathlib.Path, layers: list[FullLayerData
             feature_list.append(feature)
         else:
             print("This layer type IS NOT supported!")
-    
+
     annotations = {
-        "type":"FeatureCollection",
+        "type": "FeatureCollection",
         "features": feature_list,
-        "properties": {
-            "shape_layers": saved_annotations,
-            "prop2": "val2"
-        }
+        "properties": {"shape_layers": saved_annotations, "prop2": "val2"},
     }
 
     write_geojson(out_path, annotations)
 
-    return [out_path]
+    return [str(out_path)]
+
 
 # def save_geojson(out_path: str | pathlib.Path, shapes: list[FullLayerData]) -> list[str]:
 
