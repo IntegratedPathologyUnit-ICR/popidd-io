@@ -55,7 +55,7 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
                     ],  # Needs to be set to img layer scale, with *-1,*1
                     "blending": "translucent",
                     "edge_color": "#55007fff",
-                    "edge_width": 60,
+                    "edge_width": 120,
                     "face_color": "transparent",
                     "text": {
                         "string": _,
