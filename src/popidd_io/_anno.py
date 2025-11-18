@@ -30,6 +30,7 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
     geo_anno = geopandas.read_file(path)
     # Need to grab additional feature properties and save them as shape layer metadata
     shape_layer_data = []
+    # Split off code below to its own function(s?) -> parse geopandas file and 1)populate annotation list, 2) generate shape_layer_data entry (or similar, need to check latest napari devs)
     for anno, _ in enumerate(geo_anno["name"]):
         print(anno, _)
         nap_anno = []
