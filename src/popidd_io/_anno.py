@@ -31,14 +31,31 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
     # Need to grab additional feature properties and save them as shape layer metadata
     shape_layer_data = []
     # Split off code below to its own function(s?) -> parse geopandas file and 1)populate annotation list, 2) generate shape_layer_data entry (or similar, need to check latest napari devs)
-    for anno, _ in enumerate(geo_anno["name"]):
+    for anno, _ in enumerate(geo_anno["id"]):
         print(anno, _)
+        if geo_anno["name"][anno] is None:
+            try:
+                import ast
+
+                name = ast.literal_eval(geo_anno["classification"][anno])[
+                    "name"
+                ]
+            except:
+                name = _
+        else:
+            name = geo_anno["name"][anno]
+        print(anno, name)
         nap_anno = []
+        print(geo_anno["geometry"][anno].geom_type)
         if geo_anno["geometry"][anno].geom_type == "Polygon":
-            nap_anno.append(geo_anno["geometry"][anno].exterior.coords[:])
+            coordinates = geo_anno["geometry"][anno].exterior.coords[:]
+            print(coordinates)
+            nap_anno.append(coordinates)
         elif geo_anno["geometry"][anno].geom_type == "MultiPolygon":
             for poly in geo_anno["geometry"][anno].geoms:
-                nap_anno.append(poly.exterior.coords[:])
+                coordinates = poly.exterior.coords[:]
+                print(coordinates)
+                nap_anno.append(coordinates)
         else:
             print(geo_anno["geometry"][anno].geom_type)
             raise NotImplementedError(geo_anno["geometry"][anno].geom_type)
@@ -47,7 +64,7 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
             (
                 nap_anno,
                 {
-                    "name": f"Annot. {_}",
+                    "name": f"Annot. {name}",
                     "shape_type": "polygon",
                     "rotate": -90,
                     "scale": [
@@ -59,7 +76,7 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
                     "edge_width": 120,
                     "face_color": "transparent",
                     "text": {
-                        "string": _,
+                        "string": name,
                         "size": 12,
                         "scaling": True,
                         "anchor": "upper_left",
