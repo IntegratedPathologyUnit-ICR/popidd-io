@@ -31,38 +31,31 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
     # Need to grab additional feature properties and save them as shape layer metadata
     shape_layer_data = []
     # Split off code below to its own function(s?) -> parse geopandas file and 1)populate annotation list, 2) generate shape_layer_data entry (or similar, need to check latest napari devs)
-    for anno, _ in enumerate(geo_anno["id"]):
-        print(anno, _)
-        if geo_anno["name"][anno] is None:
+
+    for anno in geo_anno.itertuples():
+        if anno.name is None:
             try:
                 import ast
 
-                name = ast.literal_eval(geo_anno["classification"][anno])[
-                    "name"
-                ]
-            except:
-                name = _
+                name = ast.literal_eval(anno.classification)["name"]
+            except AttributeError or KeyError:
+                name = anno.Index
         else:
-            name = geo_anno["name"][anno]
-        print(anno, name)
-        nap_anno = []
-        print(geo_anno["geometry"][anno].geom_type)
-        if geo_anno["geometry"][anno].geom_type == "Polygon":
-            coordinates = geo_anno["geometry"][anno].exterior.coords[:]
-            print(coordinates)
-            nap_anno.append(coordinates)
-        elif geo_anno["geometry"][anno].geom_type == "MultiPolygon":
-            for poly in geo_anno["geometry"][anno].geoms:
+            name = anno.name
+        anno_layer = []
+        if anno.geometry.geom_type == "Polygon":
+            coordinates = anno.geometry.exterior.coords[:]
+            anno_layer.append(coordinates)
+        elif anno.geometry.geom_type == "MultiPolygon":
+            for poly in anno.geometry.geoms:
                 coordinates = poly.exterior.coords[:]
-                print(coordinates)
-                nap_anno.append(coordinates)
+                anno_layer.append(coordinates)
         else:
-            print(geo_anno["geometry"][anno].geom_type)
-            raise NotImplementedError(geo_anno["geometry"][anno].geom_type)
+            raise NotImplementedError(anno.geometry.geom_type)
 
         shape_layer_data.append(
             (
-                nap_anno,
+                anno_layer,
                 {
                     "name": f"Annot. {name}",
                     "shape_type": "polygon",
