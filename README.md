@@ -61,6 +61,10 @@ Before contributing, please install and use pre-commit hooks:
     pip install pre-commit
     pre-commit install
 
+Also test the project using pytest from the project's root directory:
+
+    pytest
+
 ## Description
 
 This plugin brings support for brightfield and fluorescence images to Napari,
