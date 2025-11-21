@@ -7,31 +7,21 @@ from napari.types import FullLayerData
 from ._anno import point2feat, shape2feat, write_geojson
 
 
-def save_singleannolayer(
-    out_path: str | pathlib.Path, data: object, attributes: dict
-) -> list[str]:
-    print(out_path)
-    print(data)
-    print(attributes)
-    raise NotImplementedError
-    return []
-
-
 def save_manyannolayers(
     out_path: str | pathlib.Path, layers: list[FullLayerData]
 ) -> list[str]:
     feature_list = []
     saved_annotations = []
-    for layer in layers:
-        if layer[2] == "shapes":
+    for layer_data_tuple in layers:
+        if layer_data_tuple[2] == "shapes":
             print("Shape layer")
-            feature = shape2feat(layer)
-            saved_annotations.append(layer[1]["name"])
+            feature = shape2feat(layer_data_tuple)
+            saved_annotations.append(layer_data_tuple[1]["name"])
             feature_list.append(feature)
-        elif layer[2] == "points":
+        elif layer_data_tuple[2] == "points":
             print("Points layer")
-            feature = point2feat(layer)
-            saved_annotations.append(layer[1]["name"])
+            feature = point2feat(layer_data_tuple)
+            saved_annotations.append(layer_data_tuple[1]["name"])
             feature_list.append(feature)
         else:
             print("This layer type IS NOT supported!")

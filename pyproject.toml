@@ -5,11 +5,11 @@ description = "A simple plugin to read digital pathology images and annotations 
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
-  {name = "Ferran Cardoso Rodriguez"},
-  {email = "ferran.cardoso@icr.ac.uk"},
+    {name = "Ferran Cardoso Rodriguez"},
+    {email = "ferran.cardoso@icr.ac.uk"},
 ]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "Framework :: napari",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -27,7 +27,7 @@ dependencies = [
     "magicgui",
     "qtpy",
     "scikit-image",
-    "napari",
+    "napari==0.6",
     "numpy",
     "zarr<3",
     "dask",
@@ -119,5 +119,5 @@ exclude = [
     "*_vendor*",
 ]
 
-target-version = "py310"
+target-version = "py312"
 fix = true

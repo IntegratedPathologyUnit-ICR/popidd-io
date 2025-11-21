@@ -34,7 +34,7 @@ https://napari.org/stable/plugins/index.html
 
 Setup conda environment
 
-    mamba create -n popidd_io python pip pyqt
+    mamba create -n popidd_io python=3.12 pip pyqt numba
 
 Activate conda environment
 
@@ -60,6 +60,10 @@ Before contributing, please install and use pre-commit hooks:
 
     pip install pre-commit
     pre-commit install
+
+Also test the project using pytest from the project's root directory:
+
+    pytest
 
 ## Description
 

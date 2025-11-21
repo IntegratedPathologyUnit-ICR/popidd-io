@@ -35,7 +35,9 @@ from popidd_io import get_anno_reader, get_image_reader
 #     assert reader is None
 
 
-# Add here pass and fail tests for the readers
+# Testing Images #
+
+
 @pytest.fixture
 def write_im2file(tmp_path):
     def write_tiff(file):
@@ -108,13 +110,6 @@ def test_img_reader_pass():
     assert reader is None
 
 
-def test_img_reader_list(write_im2file):
-    _, path1 = write_im2file("temp1.ome.tif")
-    _, path2 = write_im2file("temp2.ome.tif")
-    reader = get_image_reader([path1, path2])
-    assert callable(reader)
-
-
 def test_img_reader(write_im2file):
     data, test_file = write_im2file("temp.ome.tif")
     reader = get_image_reader(test_file)
@@ -129,6 +124,98 @@ def test_img_reader(write_im2file):
     # numpy.testing.assert_allclose(data, layer_data_list[0][0][0].compute()) #Numpy of 1st lvl of dask array list
 
 
+def test_img_reader_list(write_im2file):
+    _, path1 = write_im2file("temp1.ome.tif")
+    _, path2 = write_im2file("temp2.ome.tif")
+    reader = get_image_reader([path1, path2])
+    assert callable(reader)
+
+
+# Testing Annotations #
+
+
+@pytest.fixture
+def geojson_file(tmp_path):
+    import geopandas as gpd
+    from shapely.geometry import MultiPoint, MultiPolygon, Point, Polygon
+
+    poly = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+    poly2 = Polygon([(2, 2), (3, 2), (3, 3), (2, 3)])
+    multipoly = MultiPolygon([poly, poly2])
+    pt = Point(0.5, 0.5)
+    mpt = MultiPoint([Point(2, 2), Point(2.5, 2.5)])
+
+    gdf = gpd.GeoDataFrame(
+        {
+            "name": ["poly", "multipoly", "pt", "mpt"],
+            "geometry": [poly, multipoly, pt, mpt],
+        }
+    )
+
+    path = tmp_path / "test_annotations.geojson"
+    gdf.to_file(path, driver="GeoJSON")
+    return str(path), gdf
+
+
+@pytest.fixture
+def geojson_pair(tmp_path):
+    import geopandas as gpd
+    from shapely.geometry import MultiPolygon, Polygon
+
+    poly = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+    poly2 = Polygon([(2, 2), (3, 2), (3, 3), (2, 3)])
+    multipoly = MultiPolygon([poly, poly2])
+
+    gdf = gpd.GeoDataFrame(
+        {"name": ["one", "two"], "geometry": [poly, multipoly]}
+    )
+
+    p1 = tmp_path / "a.geojson"
+    p2 = tmp_path / "b.geojson"
+    gdf.to_file(p1, driver="GeoJSON")
+    gdf.to_file(p2, driver="GeoJSON")
+    return [str(p1), str(p2)]
+
+
+# @pytest.fixture
+# def parquet_file(tmp_path):
+#     import pandas as pd
+#     import numpy as np
+
+#     df = pd.DataFrame({"x": np.arange(3), "label": ["a", "b", "c"]})
+#     path = tmp_path / "test_labels.parquet"
+#     df.to_parquet(path)
+#     return str(path), df
+
+
 def test_anno_reader_pass():
     reader = get_anno_reader("fake.file")
     assert reader is None
+
+
+def test_anno_reader_geojson(geojson_file):
+    path, gdf = geojson_file
+    reader = get_anno_reader(path)
+    assert callable(reader)
+    layers = reader(path)
+    assert isinstance(layers, list) and len(layers) == len(gdf)
+    for layer in layers:
+        assert isinstance(layer, tuple)
+        assert layer[2] in ("shapes", "points")
+
+
+def test_anno_reader_list(geojson_pair):
+    reader = get_anno_reader(geojson_pair)
+    assert callable(reader)
+
+
+# def test_anno_reader_parquet(parquet_file):
+#     path, df = parquet_file
+#     reader = get_anno_reader(path)
+#     assert callable(reader)
+#     layers = reader(path)
+#     assert isinstance(layers, list) and len(layers) > 0
+#     data_array, meta, layer_type = layers[0]
+#     assert layer_type == "labels"
+#     import numpy as _np
+#     _np.testing.assert_array_equal(data_array, df.to_numpy())
