@@ -68,12 +68,12 @@ def load_img(
             )
         ]
     else:
-        print("Fluorescence")
+        print("Assume Fluorescence")
         img_layer_data = []
         for index, (target, col) in enumerate(md["colmap_channels"].items()):
             md["dye"] = target
             layer = md["dye"]
-            if md["new_format"] == True:
+            if md["md_format"] == "new":
                 md["biomarker"] = md["fluor_to_marker"][target]
                 layer = md["biomarker"]
             cmap = Colormap(
@@ -120,12 +120,18 @@ def read_img(img, load_mem):
 
     # Loading Image data
     store = tifffile.imread(img, aszarr=True)
-    image = zarr.open(store, mode="r")
-    if isinstance(image, zarr.hierarchy.Group):
-        zarray = [array for _, array in image.arrays()]
+    image = zarr.open(store=store, mode="r")
+    print(image)
+    print(type(image))
+    if isinstance(image, zarr.Group):
+        zarray = [
+            arr for _, arr in sorted(image.arrays(), key=lambda kv: int(kv[0]))
+        ]
     else:
         zarray = [image]
     print(len(zarray), zarray[0], zarray[0].shape)
+    for i in zarray:
+        print(i)
     dask_array = darray.from_zarr(
         zarray[-1]
     )  # Convert zarr array to Dask array
@@ -153,6 +159,9 @@ def read_img(img, load_mem):
         raise NotImplementedError("The image bit depth is not supported.")
     if not load_mem:
         zarray = [darray.from_zarr(array) for array in zarray]
+    print(len(zarray), zarray[0], zarray[0].shape)
+    for i in zarray:
+        print(i)
     return zarray, int_scale, modality  # returns list of zarr arrays
 
 
@@ -175,7 +184,7 @@ def read_md(img, modality):
         - 'modality': The imaging modality.
         - 'fluor_to_marker' (if modality is "IF"): A mapping of fluorophores to markers.
         - 'colmap_channels' (if modality is "IF"): Color map channels.
-        - 'new_format' (if modality is "IF"): A flag indicating if the new format is used.
+        - 'md_format' (if modality is "IF"): A flag indicating if the new format is used.
 
     Raises:
     NotImplementedError: If the resolution unit is not in centimeters or inches.
@@ -218,20 +227,21 @@ def read_md(img, modality):
                 raise NotImplementedError(
                     "Scaling supports only images in centimeters or inches"
                 )
-        except Exception as e:
-            warning_noMD = warnings.warn(
-                f"Could not detect resolution metadata for image \n {img.stem}. \n Exception: {e}"
+        except KeyError:
+            msg = (
+                f"Could not detect resolution metadata for image\n{img.stem}."
             )
-            WarningNotification(warning_noMD)
+            warnings.warn(msg, stacklevel=2)
+            WarningNotification(msg)
         md = full_res_tags
         md["path"] = img
         md["modality"] = modality
         md["res_scale"] = res_scale
         if modality == "IF":
-            fluor_to_marker, colmap_channels, new_format = _get_mdIF(src)
+            fluor_to_marker, colmap_channels, md_format = _get_mdIF(src)
             md["fluor_to_marker"] = fluor_to_marker
             md["colmap_channels"] = colmap_channels
-            md["new_format"] = new_format
+            md["md_format"] = md_format
     return md
 
 
@@ -249,9 +259,9 @@ def _get_mdIF(TiffFile):
                 to markers if the new format is detected, otherwise False.
             - colmap_channels (dict): A dictionary mapping channel names to their
                 respective RGB color tuples.
-            - new_format (bool): A boolean indicating whether the new format was detected.
+            - md_format (str): .
     """
-    new_format = False
+    md_format = "old"
     single_page_md = False
     fluor_to_marker = False
     xml = ElementTree.fromstring(
@@ -262,7 +272,7 @@ def _get_mdIF(TiffFile):
 
         dicti = json.loads(xml.find(".//LibraryAsJSON").text)
         if "spectra" in dicti:
-            new_format = True
+            md_format = "new"
             fluor_to_marker = {
                 item["fluor"]: item["marker"]
                 for item in dicti["spectra"]
@@ -272,7 +282,7 @@ def _get_mdIF(TiffFile):
     for page in TiffFile.series[0].pages:
         try:
             xml = ElementTree.fromstring(page.tags["ImageDescription"].value)
-            if new_format == True:
+            if md_format == "new":
                 colmap_channels[xml.find(".//Responsivity/Band/Name").text] = (
                     tuple(
                         float(x) for x in xml.find(".//Color").text.split(",")
@@ -284,7 +294,10 @@ def _get_mdIF(TiffFile):
                 ] = tuple(
                     float(x) for x in xml.find(".//Color").text.split(",")
                 )
-        except:  # attribute error on the else above and keyerror on the imagedescription
+        except (
+            AttributeError,
+            KeyError,
+        ):  # attribute error on the else above and keyerror on the imagedescription
             single_page_md = True
     # EXPERIMENTAL, to be worked upon
     if single_page_md:
@@ -293,7 +306,7 @@ def _get_mdIF(TiffFile):
         tree.write(filename, encoding="utf-8", xml_declaration=True)
         channels = xml.find(".//channels")
         for channel in channels.findall("channel"):
-            channel_id = channel.get("id")
+            # channel_id = channel.get("id")
             channel_name = channel.get("name")
             print(channel_name)
             rgb_value = int(channel.get("rgb"))
@@ -313,4 +326,4 @@ def _get_mdIF(TiffFile):
         for key, val in colmap_channels.items()
     }
     print(colmap_channels)
-    return fluor_to_marker, colmap_channels, new_format
+    return fluor_to_marker, colmap_channels, md_format

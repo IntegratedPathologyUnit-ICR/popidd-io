@@ -29,10 +29,11 @@ dependencies = [
     "scikit-image",
     "napari==0.6",
     "numpy",
-    "zarr<3",
+    "numba",
+    "zarr>=3",
     "dask",
     "pathlib",
-    "tifffile==2025.1.10",
+    "tifffile=>2025.5.21",#From here onwards zarr>3
     "imagecodecs",
     "geopandas",
     "shapely",

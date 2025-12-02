@@ -71,10 +71,13 @@ def load_geojson(path: str | pathlib.Path) -> list[FullLayerData]:
     for anno in geo_anno.itertuples():
         if anno.name is None:
             try:
-                import ast
+                if isinstance(anno.classification, dict):
+                    name = anno.classification["name"]
+                else:  # Older versions load the dict as a string
+                    import ast
 
-                name = ast.literal_eval(anno.classification)["name"]
-            except (AttributeError, KeyError):
+                    name = ast.literal_eval(anno.classification)["name"]
+            except (AttributeError, KeyError, ValueError):
                 name = anno.Index
         else:
             name = anno.name
